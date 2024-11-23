@@ -69,15 +69,18 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
       from: normalizeDate(selectedRange[0]),
       to: normalizeDate(selectedRange[1]),
     };
-  
+
     setRange(normalizedRange);
-  
-    const weekends = getWeekendsInRange(normalizedRange.from, normalizedRange.to);
+
+    const weekends = getWeekendsInRange(
+      normalizedRange.from,
+      normalizedRange.to
+    );
     onChange(
       [formatDate(normalizedRange.from), formatDate(normalizedRange.to)],
       weekends.map(formatDate)
     );
-  };  
+  };
 
   // Function to handle month navigation
   const handleMonthChange = (offset: number) => {
@@ -93,7 +96,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     }
   };
 
-  // Function to handle year navigation (previous or next year)
+  // Function to handle year navigation
   const handleYearChange = (offset: number) => {
     setCurrentYear(currentYear + offset);
   };

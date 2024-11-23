@@ -1,14 +1,5 @@
-import React from 'react';
+import React from "react";
 
-// Utility function to check if a date is a weekend (Saturday or Sunday)
-const isWeekend = (date: Date) => date.getDay() === 0 || date.getDay() === 6;
-
-// Utility function to format the date as "YYYY-MM-DD" for comparison
-const formatDate = (date: Date) => {
-  return date.toISOString().split('T')[0];
-};
-
-// Define the DateRange type
 interface DateRange {
   from: Date | null;
   to: Date | null;
@@ -20,7 +11,7 @@ interface CalendarProps {
   range: DateRange;
   onDayClick: (selectedDate: Date) => void;
   onMonthChange: (offset: number) => void;
-  onYearChange: (offset: number) => void; // Add the onYearChange prop here
+  onYearChange: (offset: number) => void;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -33,7 +24,7 @@ const Calendar: React.FC<CalendarProps> = ({
 }) => {
   // Utility function to normalize date for comparison
   const toDateKey = (date: Date): string => {
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   };
 
   // Get the first and last days of the month
@@ -55,7 +46,9 @@ const Calendar: React.FC<CalendarProps> = ({
   // Calculate the number of empty cells before the first day of the month
   const prevMonthDays = [];
   for (let i = startDayOfWeek - 1; i >= 0; i--) {
-    prevMonthDays.push(new Date(year, month - 1, prevMonthLastDay.getDate() - i));
+    prevMonthDays.push(
+      new Date(year, month - 1, prevMonthLastDay.getDate() - i)
+    );
   }
 
   // Calculate the number of empty cells after the last day of the month
@@ -92,8 +85,10 @@ const Calendar: React.FC<CalendarProps> = ({
         <button onClick={() => onYearChange(1)}>Next Year &gt;&gt;</button>
       </div>
       <div className="calendar-weekdays">
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div key={day} className="calendar-day-name">{day}</div>
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <div key={day} className="calendar-day-name">
+            {day}
+          </div>
         ))}
       </div>
       <div className="calendar-grid">
@@ -109,9 +104,9 @@ const Calendar: React.FC<CalendarProps> = ({
             <div
               key={toDateKey(date)}
               className={`calendar-day 
-                ${isWeekendDay ? 'disabled' : ''} 
-                ${isSelected ? 'selected' : ''} 
-                ${isWithinRange && !isSelected ? 'in-range' : ''}`}
+                ${isWeekendDay ? "disabled" : ""} 
+                ${isSelected ? "selected" : ""} 
+                ${isWithinRange && !isSelected ? "in-range" : ""}`}
               onClick={() => !isWeekendDay && onDayClick(date)}
             >
               {date.getDate()}
@@ -122,6 +117,5 @@ const Calendar: React.FC<CalendarProps> = ({
     </div>
   );
 };
-
 
 export default Calendar;

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import DateRangePicker from './components/DateRangePicker/DateRangePicker';
+import React, { useState } from "react";
+import DateRangePicker from "./components/DateRangePicker/DateRangePicker";
 
 const App: React.FC = () => {
-  const [selectedRange, setSelectedRange] = useState<[string | null, string | null]>([null, null]);
+  const [selectedRange, setSelectedRange] = useState<
+    [string | null, string | null]
+  >([null, null]);
   const [weekends, setWeekends] = useState<string[]>([]);
 
   const handleDateChange = (
@@ -16,7 +18,11 @@ const App: React.FC = () => {
   // Helper function to calculate date ranges
   const getLastMonth = (): [Date, Date] => {
     const now = new Date();
-    const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const firstDayLastMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      1
+    );
     const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0); // Day 0 gives the last day of the previous month
     return [firstDayLastMonth, lastDayLastMonth];
   };
@@ -53,55 +59,59 @@ const App: React.FC = () => {
 
   const getNextMonth = (): [Date, Date] => {
     const now = new Date();
-    const firstDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const firstDayNextMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      1
+    );
     const lastDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 2, 0); // Day 0 gives the last day of the current month + 1
     return [firstDayNextMonth, lastDayNextMonth];
   };
 
   const predefinedRanges: { label: string; range: [Date, Date] }[] = [
     {
-      label: 'Previous Year',
+      label: "Previous Year",
       range: [
         new Date(new Date().getFullYear() - 1, 0, 1), // January 1st of last year
         new Date(new Date().getFullYear() - 1, 11, 31), // December 31st of last year
       ] as [Date, Date],
     },
     {
-      label: 'Previous Month',
+      label: "Previous Month",
       range: getLastMonth(),
     },
     {
-      label: 'Previous Week',
+      label: "Previous Week",
       range: getLastWeek(),
     },
     {
-      label: 'Yesterday',
+      label: "Yesterday",
       range: [
         new Date(new Date().setDate(new Date().getDate() - 1)), // Yesterday
         new Date(new Date().setDate(new Date().getDate() - 1)),
       ] as [Date, Date],
     },
     {
-      label: 'Today',
+      label: "Today",
       range: [new Date(), new Date()] as [Date, Date], // Today
     },
     {
-      label: 'Tomorrow',
+      label: "Tomorrow",
       range: [
         new Date(new Date().setDate(new Date().getDate() + 1)), // Tomorrow
         new Date(new Date().setDate(new Date().getDate() + 1)),
       ] as [Date, Date],
     },
     {
-      label: 'Next Week',
+      label: "Next Week",
       range: getNextWeek(),
     },
     {
-      label: 'Next Month',
+      label: "Next Month",
       range: getNextMonth(),
     },
     {
-      label: 'Next Year',
+      label: "Next Year",
       range: [
         new Date(new Date().getFullYear() + 1, 0, 1), // January 1st of next year
         new Date(new Date().getFullYear() + 1, 11, 31), // December 31st of next year
@@ -112,10 +122,13 @@ const App: React.FC = () => {
   return (
     <div>
       <h1>Date Range Picker</h1>
-      <DateRangePicker onChange={handleDateChange} predefinedRanges={predefinedRanges} />
+      <DateRangePicker
+        onChange={handleDateChange}
+        predefinedRanges={predefinedRanges}
+      />
 
       {selectedRange[0] && selectedRange[1] && (
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: "20px" }}>
           <h3>Selected Date Range</h3>
           <p>
             From: {selectedRange[0]} To: {selectedRange[1]}
