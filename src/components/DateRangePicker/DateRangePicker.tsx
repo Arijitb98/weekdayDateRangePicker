@@ -70,6 +70,10 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
       to: normalizeDate(selectedRange[1]),
     };
 
+    // Update the calendar view to the month and year of the 'to' date
+    setCurrentMonth(normalizedRange.to.getMonth());
+    setCurrentYear(normalizedRange.to.getFullYear());
+
     setRange(normalizedRange);
 
     const weekends = getWeekendsInRange(
