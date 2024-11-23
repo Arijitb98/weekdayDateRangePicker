@@ -1,0 +1,127 @@
+/* Base styling */
+.date-range-picker {
+  font-family: Arial, sans-serif;
+  padding: 1rem;
+}
+
+.calendar {
+  margin-bottom: 1rem;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header button {
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calendar-header span {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Grid styling for the calendar */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+/* Weekday headers styling */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #f0f0f0;
+  padding: 0.5rem 0;
+}
+
+.calendar-day-name {
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Individual calendar day cell */
+.calendar-day {
+  padding: 0.75rem;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 4px;
+  position: relative;
+}
+
+/* Highlighting the selected date */
+.calendar-day.selected {
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Highlighting in-range dates (dates between the start and end of the selected range) */
+.calendar-day.in-range {
+  background: #cce5ff;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Styling for disabled weekends */
+.calendar-day.disabled {
+  background: #eee;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.calendar-day:hover:not(.disabled) {
+  background-color: #ddd;
+}
+
+/* Container for predefined ranges */
+.predefined-ranges {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  align-items: center; /* Align the buttons vertically */
+  margin-top: 1rem; /* Add some spacing from the calendar */
+}
+
+/* Styling for predefined ranges buttons */
+.predefined-ranges button {
+  margin: 0 1rem; /* Space between buttons */
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center; /* Ensure the text is centered inside the button */
+}
+
+/* Optional: Add hover effect for better user interaction */
+.predefined-ranges button:hover {
+  background-color: #0056b3;
+}
+
+.clear-selection-btn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clear-selection-btn:hover {
+  background-color: #c82333;
+}
