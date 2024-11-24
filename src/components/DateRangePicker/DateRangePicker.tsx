@@ -33,7 +33,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     if (isValidRange) {
       const fromDate = selectedRange[0] ? new Date(selectedRange[0]) : null;
       const toDate = selectedRange[1] ? new Date(selectedRange[1]) : null;
-      // If only one value exists (from or to), set it as a single value range
       if (fromDate && !toDate) {
         setRange({ from: fromDate, to: null });
       } else if (!fromDate && toDate) {
@@ -61,11 +60,9 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     const normalizedSelectedDate = normalizeDate(selectedDate);
     if (!isWeekday(normalizedSelectedDate)) return;
 
-    // When both from and to are already set, allow resetting the range
     if (range.from && range.to) {
       setRange({ from: normalizedSelectedDate, to: null });
     } else if (range.from) {
-      // Set the 'to' value if 'from' is already set
       const updatedRange = {
         from: normalizeDate(range.from),
         to: normalizedSelectedDate,
@@ -84,7 +81,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         weekends.map(formatDate)
       );
     } else {
-      // If no range is selected yet, set the 'from' value
       setRange({ from: normalizedSelectedDate, to: null });
     }
   };
@@ -112,11 +108,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const handleMonthChange = (offset: number) => {
     const newMonth = currentMonth + offset;
     if (newMonth < 0) {
-      setCurrentMonth(11); // Wrap to December
-      setCurrentYear(currentYear - 1); // Move to the previous year
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
     } else if (newMonth > 11) {
-      setCurrentMonth(0); // Wrap to January
-      setCurrentYear(currentYear + 1); // Move to the next year
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
     } else {
       setCurrentMonth(newMonth);
     }

@@ -138,10 +138,10 @@ const App: React.FC = () => {
         return;
       } else {
         setErrors({ ...newErrors, range: "" });
-        setWeekends(weekends); // Update weekends with the new selection
+        setWeekends(weekends);
       }
     } else {
-      setWeekends([]); // Clear weekends if no valid range
+      setWeekends([]);
     }
     setSelectedRange(selectedRange);
   };
@@ -163,27 +163,46 @@ const App: React.FC = () => {
       />
 
       <div style={{ marginTop: "20px" }}>
-        <h3>Selected Date Range</h3>
-        <p>
-          From:{" "}
-          <input
-            type="text"
-            value={selectedRange[0] || ""}
-            onChange={(e) => handleInputChange(e, 0)}
-            placeholder="YYYY-MM-DD"
-          />
-          {errors.from && <span style={{ color: "red" }}>{errors.from}</span>}{" "}
-          To:{" "}
-          <input
-            type="text"
-            value={selectedRange[1] || ""}
-            onChange={(e) => handleInputChange(e, 1)}
-            placeholder="YYYY-MM-DD"
-          />
-          {errors.to && <span style={{ color: "red" }}>{errors.to}</span>}
-        </p>
+        <div className="date-range-section">
+          <h3 className="date-range-heading">Selected Date Range</h3>
+          <div className="date-range-form">
+            <div className="date-range-field">
+              <label htmlFor="fromDate" className="date-range-label">
+                From:
+              </label>
+              <input
+                id="fromDate"
+                type="text"
+                value={selectedRange[0] || ""}
+                onChange={(e) => handleInputChange(e, 0)}
+                placeholder="YYYY-MM-DD"
+                className={`date-range-input ${
+                  errors.from ? "input-error" : ""
+                }`}
+              />
+              {errors.from && (
+                <span className="error-message">{errors.from}</span>
+              )}
+            </div>
 
-        {errors.range && <span style={{ color: "red" }}>{errors.range}</span>}
+            <div className="date-range-field">
+              <label htmlFor="toDate" className="date-range-label">
+                To:
+              </label>
+              <input
+                id="toDate"
+                type="text"
+                value={selectedRange[1] || ""}
+                onChange={(e) => handleInputChange(e, 1)}
+                placeholder="YYYY-MM-DD"
+                className={`date-range-input ${errors.to ? "input-error" : ""}`}
+              />
+              {errors.to && <span className="error-message">{errors.to}</span>}
+            </div>
+          </div>
+
+          {errors.range && <div className="range-error">{errors.range}</div>}
+        </div>
 
         {weekends.length > 0 && !weekendSelected && (
           <div>
@@ -200,11 +219,10 @@ const App: React.FC = () => {
                   {weekends.length > 0 &&
                     weekends
                       .reduce<string[][]>((acc, weekend, index) => {
-                        // Create pairs of Saturday and Sunday
                         if (index % 2 === 0) {
-                          acc.push([weekend]); // Push Saturday
+                          acc.push([weekend]);
                         } else {
-                          acc[acc.length - 1].push(weekend); // Push Sunday to the same pair
+                          acc[acc.length - 1].push(weekend);
                         }
                         return acc;
                       }, [])
