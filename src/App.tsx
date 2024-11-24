@@ -188,11 +188,35 @@ const App: React.FC = () => {
         {weekends.length > 0 && !weekendSelected && (
           <div>
             <h4>Weekend Dates:</h4>
-            <ul>
-              {weekends.map((weekend, index) => (
-                <li key={index}>{weekend}</li>
-              ))}
-            </ul>
+            <div className="weekend-dates-container">
+              <table className="weekend-dates-table">
+                <thead>
+                  <tr>
+                    <th>Saturday</th>
+                    <th>Sunday</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {weekends.length > 0 &&
+                    weekends
+                      .reduce<string[][]>((acc, weekend, index) => {
+                        // Create pairs of Saturday and Sunday
+                        if (index % 2 === 0) {
+                          acc.push([weekend]); // Push Saturday
+                        } else {
+                          acc[acc.length - 1].push(weekend); // Push Sunday to the same pair
+                        }
+                        return acc;
+                      }, [])
+                      .map((weekendPair, rowIndex) => (
+                        <tr key={rowIndex}>
+                          <td className="saturday">{weekendPair[0]}</td>
+                          <td className="sunday">{weekendPair[1] || ""}</td>
+                        </tr>
+                      ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
