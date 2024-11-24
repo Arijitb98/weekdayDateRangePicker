@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import DateRangePicker from "./components/DateRangePicker/DateRangePicker";
+import { predefinedRanges } from "./components/DateRangePicker/utils";
 
 const App: React.FC = () => {
   const [selectedRange, setSelectedRange] = useState<
     [string | null, string | null]
   >([null, null]);
   const [weekends, setWeekends] = useState<string[]>([]);
+  const [weekendSelected, setWeekendSelected] = useState<boolean>();
   const [errors, setErrors] = useState<{ [key: string]: string }>({
     from: "",
     to: "",
     range: "",
   });
 
-  // Helper function to calculate weekend dates in a range
   const getWeekendDates = (startDate: Date, endDate: Date): string[] => {
     let weekends: string[] = [];
     let currentDate = new Date(startDate);
@@ -27,20 +28,26 @@ const App: React.FC = () => {
     return weekends;
   };
 
-  // Helper function to validate date input
   const validateDate = (date: string): boolean => {
-    const regex = /^\d{4}-\d{2}-\d{2}$/; // Matches YYYY-MM-DD format
-    return regex.test(date) && !isNaN(new Date(date).getTime()); // Check if it's a valid date
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(date) && !isNaN(new Date(date).getTime());
   };
 
-  // Handle input change with auto-formatting
+  const isWeekend = (value: string): boolean => {
+    if (value.length !== 10) return false; // Ensure full date format is present (YYYY-MM-DD)
+    const parsedDate = new Date(value);
+    if (isNaN(parsedDate.getTime())) return false; // Check if valid date
+    const day = parsedDate.getDay();
+    return day === 0 || day === 6; // Sunday (0) or Saturday (6)
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     let value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
 
-    // Add hyphens at the appropriate positions
+    // Add hyphens at the appropriate positions for the YYYY-MM-DD format
     if (value.length > 4) {
       value = value.substring(0, 4) + "-" + value.substring(4);
     }
@@ -48,11 +55,10 @@ const App: React.FC = () => {
       value = value.substring(0, 7) + "-" + value.substring(7);
     }
 
-    // Ensure max length of YYYY-MM-DD (10 characters including hyphens)
+    // Limit the length to YYYY-MM-DD format (10 characters max)
     value = value.slice(0, 10);
 
-    // Validate the entered date (only validate when fully typed as YYYY-MM-DD)
-    const isValidDate = value.length === 10 && validateDate(value);
+    // Create a new range array with the updated value
     const newSelectedRange = [...selectedRange] as [
       string | null,
       string | null
@@ -60,160 +66,91 @@ const App: React.FC = () => {
     newSelectedRange[index] = value;
     setSelectedRange(newSelectedRange);
 
-    // Update errors
+    // Validate the current input (checking date format and weekend status)
+    const isValidDate = value.length === 10 && validateDate(value); // Full length, valid format
     const newErrors = { ...errors };
+
+    // Handle errors based on the input index (from or to)
     if (index === 0) {
-      newErrors.from =
-        value.length === 10 && isValidDate
-          ? ""
-          : "Enter a valid YYYY-MM-DD date";
+      if (value.length === 10 && isValidDate) {
+        if (isWeekend(value)) {
+          newErrors.from = "Weekends are not allowed.";
+          setWeekendSelected(true);
+        } else {
+          newErrors.from = "";
+          setWeekendSelected(false);
+        }
+      } else {
+        setWeekends([]);
+        newErrors.from = "Enter a valid date";
+      }
     } else {
-      newErrors.to =
-        value.length === 10 && isValidDate
-          ? ""
-          : "Enter a valid YYYY-MM-DD date";
+      if (value.length === 10 && isValidDate) {
+        if (isWeekend(value)) {
+          newErrors.to = "Weekends are not allowed.";
+          setWeekendSelected(true);
+        } else {
+          newErrors.to = "";
+          setWeekendSelected(false);
+        }
+      } else {
+        newErrors.to = "Enter a valid date";
+        setWeekends([]);
+      }
     }
+
+    // Update errors state with the modified errors
     setErrors(newErrors);
+
+    // If both dates are valid, update weekends
+    if (newSelectedRange[0] && newSelectedRange[1]) {
+      const fromDate = new Date(newSelectedRange[0]);
+      const toDate = new Date(newSelectedRange[1]);
+
+      if (fromDate <= toDate) {
+        setWeekends(getWeekendDates(fromDate, toDate));
+        newErrors.range = "";
+      } else {
+        newErrors.range = "To date cannot be earlier than From date.";
+      }
+      setErrors(newErrors);
+    }
   };
 
   const handleDateChange = (
     selectedRange: [string | null, string | null],
     weekends: string[]
   ) => {
-    let rangeError = "";
-    let fromDate: Date | null = null;
-    let toDate: Date | null = null;
+    setWeekendSelected(false);
 
-    // Only validate when both "from" and "to" dates are not null
-    if (selectedRange[0]) {
-      fromDate = new Date(selectedRange[0]);
-    }
-    if (selectedRange[1]) {
-      toDate = new Date(selectedRange[1]);
-    }
-
-    // Validate if "To" date is earlier than "From" date
-    if (fromDate && toDate && fromDate > toDate) {
-      rangeError = "To date cannot be earlier than From date.";
-    }
-
-    // Update error states
+    const [from, to] = selectedRange;
     const newErrors = { ...errors };
 
-    if (rangeError) {
-      newErrors.range = rangeError;
-    } else {
-      newErrors.range = ""; // Clear range error
-    }
+    newErrors.to = "";
+    newErrors.from = "";
+    if (from && to) {
+      const fromDate = new Date(from);
+      const toDate = new Date(to);
 
-    setErrors(newErrors);
-
-    // Only update the selected range if no range error
-    if (!rangeError) {
-      setSelectedRange(selectedRange);
-      // Calculate and set weekends when the range is valid
-      if (fromDate && toDate) {
-        const weekends = getWeekendDates(fromDate, toDate);
-        setWeekends(weekends);
+      if (fromDate > toDate) {
+        newErrors.range = "To date cannot be earlier than From date.";
+        setErrors(newErrors);
+        return;
+      } else {
+        setErrors({ ...newErrors, range: "" });
+        setWeekends(weekends); // Update weekends with the new selection
       }
+    } else {
+      setWeekends([]); // Clear weekends if no valid range
     }
+    setSelectedRange(selectedRange);
   };
 
-  // Check if both from and to dates are valid
   const fromIsValid = selectedRange[0] && !errors.from;
   const toIsValid = selectedRange[1] && !errors.to;
 
-  // Logic for setting the valid range
-  const isValidRange = !!(fromIsValid || toIsValid) && !errors.range;
-
-  // Helper function to calculate date ranges
-  const getLastMonth = (): [Date, Date] => {
-    const now = new Date();
-    const firstDayLastMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() - 1,
-      1
-    );
-    const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0); // Day 0 gives the last day of the previous month
-    return [firstDayLastMonth, lastDayLastMonth];
-  };
-
-  const getLastWeek = (): [Date, Date] => {
-    const now = new Date();
-    const startOfLastWeek = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() - now.getDay() - 6
-    );
-    const endOfLastWeek = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() - now.getDay()
-    );
-    return [startOfLastWeek, endOfLastWeek];
-  };
-
-  const getNextWeek = (): [Date, Date] => {
-    const now = new Date();
-    const startOfNextWeek = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + (7 - now.getDay()) + 1
-    );
-    const endOfNextWeek = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + (7 - now.getDay()) + 7
-    );
-    return [startOfNextWeek, endOfNextWeek];
-  };
-
-  const getNextMonth = (): [Date, Date] => {
-    const now = new Date();
-    const firstDayNextMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      1
-    );
-    const lastDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 2, 0);
-    return [firstDayNextMonth, lastDayNextMonth];
-  };
-
-  const predefinedRanges: { label: string; range: [Date, Date] }[] = [
-    {
-      label: "Previous Year",
-      range: [
-        new Date(new Date().getFullYear() - 1, 0, 1),
-        new Date(new Date().getFullYear() - 1, 11, 31),
-      ],
-    },
-    { label: "Previous Month", range: getLastMonth() },
-    { label: "Previous Week", range: getLastWeek() },
-    {
-      label: "Yesterday",
-      range: [
-        new Date(new Date().setDate(new Date().getDate() - 1)),
-        new Date(new Date().setDate(new Date().getDate() - 1)),
-      ],
-    },
-    { label: "Today", range: [new Date(), new Date()] },
-    {
-      label: "Tomorrow",
-      range: [
-        new Date(new Date().setDate(new Date().getDate() + 1)),
-        new Date(new Date().setDate(new Date().getDate() + 1)),
-      ],
-    },
-    { label: "Next Week", range: getNextWeek() },
-    { label: "Next Month", range: getNextMonth() },
-    {
-      label: "Next Year",
-      range: [
-        new Date(new Date().getFullYear() + 1, 0, 1),
-        new Date(new Date().getFullYear() + 1, 11, 31),
-      ],
-    },
-  ];
+  const isValidRange =
+    !!(fromIsValid || toIsValid) && !errors.range && !weekendSelected;
 
   return (
     <div>
@@ -221,11 +158,10 @@ const App: React.FC = () => {
       <DateRangePicker
         onChange={handleDateChange}
         predefinedRanges={predefinedRanges}
-        selectedRange={selectedRange} // Pass selected range as prop
-        isValidRange={isValidRange} // Pass validation state
+        selectedRange={selectedRange}
+        isValidRange={isValidRange}
       />
 
-      {/* Date Range Inputs */}
       <div style={{ marginTop: "20px" }}>
         <h3>Selected Date Range</h3>
         <p>
@@ -247,11 +183,9 @@ const App: React.FC = () => {
           {errors.to && <span style={{ color: "red" }}>{errors.to}</span>}
         </p>
 
-        {/* Range Error Section */}
         {errors.range && <span style={{ color: "red" }}>{errors.range}</span>}
 
-        {/* Weekend Dates Section */}
-        {weekends.length > 0 && (
+        {weekends.length > 0 && !weekendSelected && (
           <div>
             <h4>Weekend Dates:</h4>
             <ul>

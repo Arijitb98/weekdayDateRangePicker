@@ -14,8 +14,8 @@ interface DateRangePickerProps {
     weekends: string[]
   ) => void;
   predefinedRanges: { label: string; range: [Date, Date] }[];
-  selectedRange: [string | null, string | null]; // Receive selectedRange as prop
-  isValidRange: boolean; // Prop to indicate if the range is valid
+  selectedRange: [string | null, string | null];
+  isValidRange: boolean;
 }
 
 const DateRangePicker: React.FC<DateRangePickerProps> = ({
@@ -44,14 +44,13 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         setRange({ from: null, to: null });
       }
     } else {
-      // Clear range if it's invalid
       setRange({ from: null, to: null });
     }
   }, [selectedRange, isValidRange]);
 
   const isWeekday = (date: Date): boolean => {
     const day = date.getDay();
-    return day !== 0 && day !== 6; // Exclude Saturday (6) and Sunday (0)
+    return day !== 0 && day !== 6;
   };
 
   const normalizeDate = (date: Date): Date => {
@@ -113,11 +112,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const handleMonthChange = (offset: number) => {
     const newMonth = currentMonth + offset;
     if (newMonth < 0) {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
+      setCurrentMonth(11); // Wrap to December
+      setCurrentYear(currentYear - 1); // Move to the previous year
     } else if (newMonth > 11) {
-      setCurrentMonth(0);
-      setCurrentYear(currentYear + 1);
+      setCurrentMonth(0); // Wrap to January
+      setCurrentYear(currentYear + 1); // Move to the next year
     } else {
       setCurrentMonth(newMonth);
     }
@@ -144,7 +143,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
       <Calendar
         year={currentYear}
         month={currentMonth}
-        range={getNormalizedRange()} // Ensure the range is always Date | null
+        range={getNormalizedRange()}
         onDayClick={handleDateSelect}
         onMonthChange={handleMonthChange}
         onYearChange={handleYearChange}

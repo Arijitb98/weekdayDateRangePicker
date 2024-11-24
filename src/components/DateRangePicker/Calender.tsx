@@ -1,10 +1,5 @@
 import React from "react";
 
-interface DateRange {
-  from: Date | null;
-  to: Date | null;
-}
-
 interface CalendarProps {
   year: number;
   month: number;
@@ -23,7 +18,6 @@ const Calendar: React.FC<CalendarProps> = ({
   onMonthChange,
   onYearChange,
 }) => {
-  // Utility function to normalize date for comparison
   const toDateKey = (date: Date): string => {
     return date.toISOString().split("T")[0];
   };
