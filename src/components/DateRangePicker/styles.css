@@ -21,6 +21,11 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.calendar-header button:hover {
+  background-color: #0056b3;
 }
 
 .calendar-header span {
@@ -28,7 +33,6 @@
   font-weight: bold;
 }
 
-/* Grid styling for the calendar */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -36,7 +40,6 @@
   padding: 0.5rem;
 }
 
-/* Weekday headers styling */
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -47,9 +50,9 @@
 .calendar-day-name {
   text-align: center;
   font-weight: bold;
+  color: #333;
 }
 
-/* Individual calendar day cell */
 .calendar-day {
   padding: 0.75rem;
   background: #f9f9f9;
@@ -60,52 +63,60 @@
   position: relative;
 }
 
-/* Highlighting the selected date */
 .calendar-day.selected {
   background: #007bff;
   color: #fff;
   font-weight: bold;
 }
 
-/* Highlighting in-range dates (dates between the start and end of the selected range) */
 .calendar-day.in-range {
   background: #cce5ff;
   color: #007bff;
   font-weight: bold;
 }
 
-/* Styling for disabled weekends */
 .calendar-day.disabled {
   background: #eee;
   color: #ccc;
   cursor: not-allowed;
 }
 
-.calendar-day:hover:not(.disabled) {
-  background-color: #ddd;
+.calendar-day:hover {
+  cursor: pointer;
+  background-color: #c8e0f4;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
-/* Container for predefined ranges */
+.calendar-day.weekend-in-range {
+  font-weight: bold;
+  color: #ff5722;
+}
+
+.calendar-day:focus {
+  outline: 3px solid #007bff;
+  background-color: #e7f1ff;
+  border-radius: 50%;
+}
+
 .predefined-ranges {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem; 
+  margin-top: 1rem;
 }
 
-/* Styling for predefined ranges buttons */
 .predefined-ranges button {
-  margin: 0 1rem; 
+  margin: 0 1rem;
   padding: 0.5rem 1rem;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  text-align: center;
+  transition: background-color 0.3s ease;
 }
 
-/* Hover effect */
 .predefined-ranges button:hover {
   background-color: #0056b3;
 }
@@ -119,8 +130,30 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .clear-selection-btn:hover {
   background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+  .calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calendar-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .calendar-day {
+    padding: 0.5rem;
+    font-size: 14px;
+  }
+}
+.day.highlighted {
+  background-color: #ffeeba; /* Light yellow */
+  border: 1px solid #ffc107; /* Amber */
+  border-radius: 50%;
 }

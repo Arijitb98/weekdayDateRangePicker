@@ -8,8 +8,9 @@ interface DateRange {
 interface CalendarProps {
   year: number;
   month: number;
-  range: DateRange;
-  onDayClick: (selectedDate: Date) => void;
+  range: { from: Date | null; to: Date | null };
+  highlightedDates?: { range?: [string | null, string | null] };
+  onDayClick: (date: Date) => void;
   onMonthChange: (offset: number) => void;
   onYearChange: (offset: number) => void;
 }
